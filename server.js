@@ -42,12 +42,66 @@ const db = mysql.createConnection(
     console.log(`Connected to the employee_db database.`)
 );
 
-// start app
 // make EMPLOYEE MANAGER display
 
-// start prompt questions
-// choose an option: type list
-// options:
+// start app
+const startApp = () => {
+    inquirer.prompt ([
+        {
+            type: 'list',
+            name: 'nav',
+            message: 'Please select an action from the list below.',
+            choices: [
+                'View All Employees',
+                'Add Employee',
+                'Update Employee Role',
+                'View All Departments',
+                'Add Role',
+                'Add a Department',
+                'Update Employee Manager',
+                'View Employees by Manager',
+                'View Employees by Department',
+                'Delete Department',
+                'Delete Role',
+                'Delete Employee',
+                'View Total Utilized Budget by Department',
+                'Quit',
+            ],
+        }
+    ])
+    .then(response => {
+        
+        if(response === "View All Employees"){
+            
+        } else if(response === "Add Employee") {
+            
+        } else if(response === "Update Employee Role") {
+            
+        } else if(response === "View All Departments") {
+            
+        } else if(response === "Add Role") {
+            
+        } else if(response === "Add a Department") {
+            
+        } else if(response === "Update Employee Manager") {
+            
+        } else if(response === "View Employees by Manager"){
+            
+        } else if(response === "View Employees by Department") {
+            
+        } else if(response === "Delete Department") {
+            
+        } else if(response === "Delete Role") {
+            
+        } else if(response === "Delete Employee") {
+            
+        } else if(response === "View Total Utilized Budget by Department") {
+            
+        } else if(response === "Quit") {
+            
+        };
+    })
+}
 
 
 //TODO: GET STATEMENTS
