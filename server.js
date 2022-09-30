@@ -42,10 +42,16 @@ const db = mysql.createConnection(
     console.log(`Connected to the employee_db database.`)
 );
 
+db.connect(err => {
+    if (err) throw err;
+    console.log('connected as id ' + db.threadId);
+    mainNav();
+});
+
 // make EMPLOYEE MANAGER display
 
 // start app
-const startApp = () => {
+const mainNav = () => {
     inquirer.prompt ([
         {
             type: 'list',
@@ -72,17 +78,17 @@ const startApp = () => {
     .then(response => {
         
         if(response === "View All Employees"){
-            // GET viewEmployees();
+            viewEmployees();
         } else if(response === "Add Employee") {
             // POST 
         } else if(response === "Update Employee Role") {
             // UPDATE
         } else if(response === "View All Departments") {
-            // GET
+            viewDepartments();
         } else if(response === "Add Role") {
             // POST
         } else if(response === "View all Roles") {
-            // GET
+            viewRoles();
         } else if(response === "Add a Department") {
             // POST
         } else if(response === "Update Employee Manager") {
@@ -104,24 +110,45 @@ const startApp = () => {
         };
     })
 }
-startApp()
 
 //TODO: GET STATEMENTS
 // view all employees
 viewEmployees = () => {
-    // select from employees table
-    // console.table:
-    // id, first, last, role, department, salary, manager
-}
+    // select from employees table: id, first, last, role, department, salary, manager
+    const employees = 'SELECT*FROM employee JOIN role ON';
+    connection.employees(employees, function(err, res) {
+        if (err) throw err;
+        // console.table: 
+        console.table('All Employees:', res); 
+        // GO BACK TO NAV
+        mainNav();
+    })
+};
 
 // view all departments
 viewDepartments = () => {
     // show department names, ids
-}
+    const departments = 'SELECT*FROM department';
+    connection.departments(departments, function(err, res) {
+        if (err) throw err;
+        // console.table: 
+        console.table('All Departments:', res); 
+        // GO BACK TO NAV
+        mainNav();
+    })
+};
 
 // view all roles
 viewRoles = () => {
-    // show department, role title, salary, role id
+    // show role title, salary, role id
+    const roles = 'SELECT*FROM roles';
+    connection.roles(roles, function(err, res) {
+        if (err) throw err;
+        // console.table: 
+        console.table('All Roles:', res); 
+        // GO BACK TO NAV
+        mainNav();
+    })
 }
 
 //TODO: POST STATEMENTS
