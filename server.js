@@ -72,55 +72,88 @@ const startApp = () => {
     .then(response => {
         
         if(response === "View All Employees"){
-            
+            // GET viewEmployees();
         } else if(response === "Add Employee") {
-            
+            // POST 
         } else if(response === "Update Employee Role") {
-            
+            // UPDATE
         } else if(response === "View All Departments") {
-            
+            // GET
         } else if(response === "Add Role") {
-            
+            // POST
+        } else if(response === "View all Roles") {
+            // GET
         } else if(response === "Add a Department") {
-            
+            // POST
         } else if(response === "Update Employee Manager") {
-            
+            // UPDATE
         } else if(response === "View Employees by Manager"){
-            
+            // GET
         } else if(response === "View Employees by Department") {
-            
+            // GET
         } else if(response === "Delete Department") {
-            
+            // DELETE
         } else if(response === "Delete Role") {
-            
+            // DELETE
         } else if(response === "Delete Employee") {
-            
+            // DELETE
         } else if(response === "View Total Utilized Budget by Department") {
-            
+            // GET
         } else if(response === "Quit") {
-            
+            // END
         };
     })
 }
-
+startApp()
 
 //TODO: GET STATEMENTS
+// view all employees
+viewEmployees = () => {
+    // select from employees table
+    // console.table:
+    // id, first, last, role, department, salary, manager
+}
+
 // view all departments
+viewDepartments = () => {
+    // show department names, ids
+}
 
 // view all roles
-
-// view all employees
+viewRoles = () => {
+    // show department, role title, salary, role id
+}
 
 //TODO: POST STATEMENTS
 // add a dept.
+newDept = () => {
+    // inquire:  input: name of dept, 
+    // then response.name 
+    // const sql statments
+}
 
 // add a role
+newRole = () => {
+    // inquire: input: name of role, salary
+    // response.name, response.salary
+    // add to department
+    // sql statments
+}
 
 // add an employee
+newEmployee = () => {
+    // inquire: input: first, last, role
+    // response.first response.last, response.role
+}
 
 
 //TODO: UPDATE STATEMENT
 // update an employee role
+updateEmployee = () => {
+    // inquire: list: employee names
+    // select employee
+    // 
+}
 
 // * BONUS --------------------------------------
 // update employee manager
