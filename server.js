@@ -71,7 +71,7 @@ const mainNav = () => {
                 'Delete Role',
                 'Delete Employee',
                 'View Total Utilized Budget by Department',
-                'Quit',
+                'Exit',
             ],
         }
     ])
@@ -80,17 +80,17 @@ const mainNav = () => {
         if(response === "View All Employees"){
             viewEmployees();
         } else if(response === "Add Employee") {
-            // POST 
+            newEmployee(); 
         } else if(response === "Update Employee Role") {
-            // UPDATE
+            updateEmployee();
         } else if(response === "View All Departments") {
             viewDepartments();
         } else if(response === "Add Role") {
-            // POST
+            newRole();
         } else if(response === "View all Roles") {
             viewRoles();
         } else if(response === "Add a Department") {
-            // POST
+            newDept();
         } else if(response === "Update Employee Manager") {
             // UPDATE
         } else if(response === "View Employees by Manager"){
@@ -105,14 +105,24 @@ const mainNav = () => {
             // DELETE
         } else if(response === "View Total Utilized Budget by Department") {
             // GET
-        } else if(response === "Quit") {
-            // END
+        } else if(response === "Exit") {
+            exitTracker();
         };
     })
 }
 
-//TODO: GET STATEMENTS
-// view all employees
+exitTracker = () => {
+    inquirer.prompt ([
+        {
+            type: 'boolean',
+            name: 'quitEmployeeTracker',
+            message: 'Would you like exit the Employee Tracker program?',
+        }
+    ])
+}
+
+// -------------------- GET ROUTES---------------------------------------------------
+// GET ALL EMPLOYEES DATA
 viewEmployees = () => {
     // select from employees table: id, first, last, role, department, salary, manager
     const employees = 'SELECT*FROM employee JOIN role ON';
@@ -120,38 +130,38 @@ viewEmployees = () => {
         if (err) throw err;
         // console.table: 
         console.table('All Employees:', res); 
-        // GO BACK TO NAV
+        // BACK TO NAV
         mainNav();
     })
 };
 
-// view all departments
+// GET ALL DEPARTMENTS
 viewDepartments = () => {
-    // show department names, ids
+    // SELECT ALL DATA FROM DEPARTMENT TABLE
     const departments = 'SELECT*FROM department';
     connection.departments(departments, function(err, res) {
         if (err) throw err;
-        // console.table: 
+        // DISPLAY ALL DEPARTMENTS IN A TABLE 
         console.table('All Departments:', res); 
-        // GO BACK TO NAV
+        // BACK TO NAV
         mainNav();
     })
 };
 
 // view all roles
 viewRoles = () => {
-    // show role title, salary, role id
+    // SELECT ALL DATA FROM ROLES TABLE
     const roles = 'SELECT*FROM roles';
     connection.roles(roles, function(err, res) {
         if (err) throw err;
-        // console.table: 
+        // DISPLAY ALL ROLES AND CORRESPONDING SALARIES
         console.table('All Roles:', res); 
-        // GO BACK TO NAV
+        // BACK TO NAV
         mainNav();
     })
 }
 
-//TODO: POST STATEMENTS
+//-----------------------POST ROUTES------------------------------------------------
 // add a dept.
 newDept = () => {
     // inquire:  input: name of dept, 
@@ -160,6 +170,12 @@ newDept = () => {
             type: 'input',
             name: 'newDept',
             message: 'What is the name of the new Department you would like to add?',
+            validate: answer => {
+                if (answer !== '') {
+                    return true;
+                }
+                return 'Please enter a new department name.'; 
+            }
         }
     ])
     // then response.name 
@@ -168,10 +184,10 @@ newDept = () => {
                         VALUES (?)`;
             connection.query(sql, function(err, res) {
                 if (err) throw err;
-                // console.table: 
-                console.table('All Roles:', res); 
-                // GO BACK TO NAV
-                mainNav();
+                // DISPLAY NEW DEPARTMENT DATA
+
+                // console.table('All Departments:', res); 
+                
             })
     })
     // const sql statments
@@ -185,11 +201,23 @@ newRole = () => {
             type: 'input',
             name: 'newRole',
             message: 'What is the name of the new Role you would like to add?',
+            validate: answer => {
+                if (answer !== '') {
+                    return true;
+                }
+                return 'Please enter a role name.'; 
+            }
         },
         {
             type: 'input',
             name: 'newSalary',
             message: 'What is the salary of the role you are adding?',
+            validate: answer => {
+                if (answer !== '') {
+                    return true;
+                }
+                return 'Please the salary corresponding to the new role.'; 
+            }
         }
     ])
     // response.name, response.salary
@@ -209,23 +237,37 @@ newRole = () => {
 
 // add an employee
 newEmployee = () => {
-    // inquire: input: first, last, role
-    // response.first response.last, response.role
+    const roles = `SELECT*FROM roles`
+    
         inquirer.prompt ([
             {
                 type: 'input',
                 name: 'newEmployeeFirstName',
                 message: 'What is the first name of the new employee?',
+                validate: answer => {
+                    if (answer !== '') {
+                        return true;
+                    }
+                    return 'Please enter a first name for the new employee.'; 
+                }
             },
             {
                 type: 'input',
                 name: 'newEmployeeLastName',
                 message: 'What is the last name of the new employee?',
+                validate: answer => {
+                    if (answer !== '') {
+                        return true;
+                    }
+                    return 'Please enter a last name for the new employee.'; 
+                }
             },
             {
-                type: 'input',
+                // select from employee roles, pick one
+                type: 'list',
                 name: 'newEmployeeRole',
                 message: 'What is the role of this new employee?',
+                choices: [],
             }
         ])
         // response.name, response.salary
@@ -235,7 +277,7 @@ newEmployee = () => {
             connection.roles(roles, function(err, res) {
                 if (err) throw err;
                 // console.table: 
-                console.table('All Roles:', res); 
+                console.table('All Employees:', res); 
                 // GO BACK TO NAV
                 mainNav();
             })
@@ -243,46 +285,41 @@ newEmployee = () => {
 }
 
 
-//TODO: UPDATE STATEMENT
-// update an employee role
+//---------------------UPDATE ROUTES-------------------------------
+// UPDATE EMPLOYEE ROLE
 updateEmployee = () => {
-    // inquire: list: employee names
-    // select employee
-    // 
+    // select from employee_db
+    const findEmployeeSQL = `SELECT*FROM employee`;
+
+    // inquire list: employee name
+    inquirer.prompt([
+        {
+            // select from employee roles, pick one
+            type: 'list',
+            name: 'newEmployeeRole',
+            message: 'What is the role of this new employee?',
+            choices: [],
+        }
+    ])
 }
 app.put('/api/review/:id', (req, res) => {
-    const sql = `UPDATE reviews SET review = ? WHERE id = ?`;
-    const params = [req.body.review, req.params.id];
-  
-    db.query(sql, params, (err, result) => {
-      if (err) {
-        res.status(400).json({ error: err.message });
-      } else if (!result.affectedRows) {
-        res.json({
-          message: 'Movie not found'
-        });
-      } else {
-        res.json({
-          message: 'success',
-          data: req.body,
-          changes: result.affectedRows
-        });
-      }
-    });
+  const sql = `UPDATE reviews SET review = ? WHERE id = ?`;
+  const params = [req.body.review, req.params.id];
+
+  db.query(sql, params, (err, result) => {
+    if (err) {
+      res.status(400).json({ error: err.message });
+    } else if (!result.affectedRows) {
+      res.json({
+        message: 'Movie not found'
+      });
+    } else {
+      res.json({
+        message: 'success',
+        data: req.body,
+        changes: result.affectedRows
+      });
+    }
   });
+});
 
-// * BONUS --------------------------------------
-// update employee manager
-
-// Get: view employees by manager
-
-// GET: view employees by department
-
-// DELETE:
-// delete department
-
-// delete roles
-
-// delete employee
-
-// GET: view total utilized budget by deparment
