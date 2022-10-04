@@ -155,22 +155,91 @@ viewRoles = () => {
 // add a dept.
 newDept = () => {
     // inquire:  input: name of dept, 
+    inquirer.prompt ([
+        {
+            type: 'input',
+            name: 'newDept',
+            message: 'What is the name of the new Department you would like to add?',
+        }
+    ])
     // then response.name 
+    .then(response => {
+        const addDept = `INSERT INTO department (name)
+                        VALUES (?)`;
+            connection.query(sql, function(err, res) {
+                if (err) throw err;
+                // console.table: 
+                console.table('All Roles:', res); 
+                // GO BACK TO NAV
+                mainNav();
+            })
+    })
     // const sql statments
 }
 
 // add a role
 newRole = () => {
     // inquire: input: name of role, salary
+    inquirer.prompt ([
+        {
+            type: 'input',
+            name: 'newRole',
+            message: 'What is the name of the new Role you would like to add?',
+        },
+        {
+            type: 'input',
+            name: 'newSalary',
+            message: 'What is the salary of the role you are adding?',
+        }
+    ])
     // response.name, response.salary
-    // add to department
-    // sql statments
+    .then(response => {
+        const addRole = `INSERT INTO role (salary)
+        VALUES (?)`;
+        connection.query(roles, function(err, res) {
+            if (err) throw err;
+            // console.table: 
+            console.table('All Roles:', res); 
+            // GO BACK TO NAV
+            mainNav();
+        })
+    })
+
 }
 
 // add an employee
 newEmployee = () => {
     // inquire: input: first, last, role
     // response.first response.last, response.role
+        inquirer.prompt ([
+            {
+                type: 'input',
+                name: 'newEmployeeFirstName',
+                message: 'What is the first name of the new employee?',
+            },
+            {
+                type: 'input',
+                name: 'newEmployeeLastName',
+                message: 'What is the last name of the new employee?',
+            },
+            {
+                type: 'input',
+                name: 'newEmployeeRole',
+                message: 'What is the role of this new employee?',
+            }
+        ])
+        // response.name, response.salary
+        .then(response => {
+            const addRole = `INSERT INTO role (salary)
+            VALUES (?)`;
+            connection.roles(roles, function(err, res) {
+                if (err) throw err;
+                // console.table: 
+                console.table('All Roles:', res); 
+                // GO BACK TO NAV
+                mainNav();
+            })
+        })
 }
 
 
@@ -181,6 +250,26 @@ updateEmployee = () => {
     // select employee
     // 
 }
+app.put('/api/review/:id', (req, res) => {
+    const sql = `UPDATE reviews SET review = ? WHERE id = ?`;
+    const params = [req.body.review, req.params.id];
+  
+    db.query(sql, params, (err, result) => {
+      if (err) {
+        res.status(400).json({ error: err.message });
+      } else if (!result.affectedRows) {
+        res.json({
+          message: 'Movie not found'
+        });
+      } else {
+        res.json({
+          message: 'success',
+          data: req.body,
+          changes: result.affectedRows
+        });
+      }
+    });
+  });
 
 // * BONUS --------------------------------------
 // update employee manager
