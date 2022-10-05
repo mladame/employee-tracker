@@ -1,3 +1,5 @@
+use employee_db
+
 -- departments
 INSERT INTO department (name)
 VALUES  ("Sales & Marketing"),

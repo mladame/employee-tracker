@@ -36,3 +36,8 @@ CREATE TABLE employee (
     ON DELETE SET NULL
     ON UPDATE CASCADE
 );
+
+-- view all data for each
+SELECT*FROM department;
+SELECT*FROM role;
+SELECT*FROM employee;
