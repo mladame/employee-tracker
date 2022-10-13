@@ -11,7 +11,7 @@ CREATE TABLE department (
     name VARCHAR(30) NOT NULL
 );
 
-CREATE TABLE role (
+CREATE TABLE roles (
     id INT AUTO_INCREMENT PRIMARY KEY,
     title VARCHAR(30) NOT NULL,
     salary DECIMAL,
@@ -21,6 +21,7 @@ CREATE TABLE role (
 );
 
 -- add foreign key and reference
+--! fix 
 CREATE TABLE employee (
     id INT AUTO_INCREMENT PRIMARY KEY,
     first_name VARCHAR(30) NOT NULL,
@@ -28,7 +29,7 @@ CREATE TABLE employee (
     role_id INT,
     manager_id INT,
     FOREIGN KEY (role_id)
-    REFERENCES role(id)
+    REFERENCES roles(id)
     ON DELETE SET NULL
     ON UPDATE CASCADE,
     FOREIGN KEY (manager_id)
@@ -39,5 +40,5 @@ CREATE TABLE employee (
 
 -- view all data for each
 SELECT*FROM department;
-SELECT*FROM role;
+SELECT*FROM roles;
 SELECT*FROM employee;

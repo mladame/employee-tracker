@@ -15,19 +15,21 @@
 // THEN I am prompted to enter the employee’s first name, last name, role, and manager, and that employee is added to the database
 // WHEN I choose to update an employee role
 // THEN I am prompted to select an employee to update and their new role and this information is updated in the database 
-// BONUS
+// * BONUS------------------------
 // * Update employee managers.
 // * View employees by manager.
 // * View employees by department.
 // * Delete departments, roles, and employees.
-// * View the total utilized budget of a department&mdash;in other words, the combined salaries of all employees in that department.
+// * View the total utilized budget of a department&mdash;
+// in other words, the combined salaries of all employees in that department.
 
-// ------------------------------------------------------------------------------------------------------------------------------------
+//* ------------------------------------------------------------------------------------------------------------------------------------
 // require packages
 const express = require('express');
 const mysql = require('mysql2');
 const inquirer = require('inquirer');
 const consoleTable = require('console.table');
+// const { response } = require('express');
 
 const PORT = process.env.PORT || 3001;
 const app = express();
@@ -99,8 +101,8 @@ const mainNav = () => {
         }
     ])
         .then(response => {
-
-            switch (response) {
+//! fix 
+            switch (response.nav) {
                 case "VIEW_EMPLOYEES":
                     viewEmployees()
                     break;
@@ -129,36 +131,41 @@ const mainNav = () => {
 }
 
 //* QUIT FUNCTION----------------------------------------------------------------------
-// exitTracker = () => {
-//     inquirer.prompt([
-//         {
-//             type: 'boolean',
-//             name: 'quitEmployeeTracker',
-//             message: 'Would you like exit the Employee Tracker program?',
-//         }
-//     ])
-//         .then((answers) => {
-//             // if true quit, otherwise back to mainNav
-//         })
-//         .catch((err) => {
-//             if (err) {
-//                 // Prompt couldn't be rendered in the current environment
-//             } else {
-//                 // Something else went wrong
-//             }
-//         })
-// };
+exitTracker = () => {
+    inquirer.prompt([
+        {
+            type: 'confirm',
+            name: 'quitEmployeeTracker',
+            message: 'Would you like exit the Employee Tracker program?',
+        }
+    ])  //! fix 
+        .then((answers) => {
+            // if true quit, otherwise back to mainNav
+            switch(answers) {
+            case "false":
+                    mainNav()
+                    break;
+                default:
+                    prompt.ui.close();
+        }}) //! fix 
+        .catch((err) => {
+            if (err) {
+                // Prompt couldn't be rendered in the current environment
+            } else {
+                // Something else went wrong
+            }
+        })
+};
 
+//* ADD EMPLOYEE--------------------------------------------------------------------
 // EXAMPLE CODE - REMOVE LATER
 // this would live in db folder index.js
 // createEmployee(employee) {
 //     return this.connection.promise().query("INSERT INTO employee SET ?", employee)
 // }
 
-
 // add to index.js code like : findAllEmployees() { return this.connection.promise().query(" WRITE MY SQL CODE" )}
 
-//* ADD EMPLOYEE--------------------------------------------------------------------
 // function addEmployee() {
 //     prompt([
 //         {
@@ -175,41 +182,49 @@ const mainNav = () => {
 
 //* GET ROUTES----------------------------------------------------------------------
 // GET ALL EMPLOYEES DATA
-// viewEmployees = () => {
-//     // select from employees table: id, first, last, role, department, salary, manager
-//     const employees = 'SELECT*FROM employee JOIN role ON';
-//     connection.employees(employees, function (err, res) {
-//         if (err) throw err;
-//         // display response as table 
-//         console.table('All Employees:', res);
-//         // back to nav
-//         mainNav();
-//     })
-// };
+viewEmployees = () => {
+    // select from employees table: id, first, last, role, department, salary, manager
+    // employee table: id, first, last,
+    // role table: role name
+    // department table: dept name
+    //! fix 
+    console.log('hello');
+    const employees = 'SELECT*FROM employee LEFT JOIN roles ON employee.role_id = roles.id;'
+    db.query(employees, function (err, res) {
+        if (err) throw err;
+        // display response as table 
+        console.table('All Employees:', res);
+        // back to nav
+        mainNav();
+    })
+};
 
 // GET ALL DEPARTMENTS
-// viewDepartments = () => {
+viewDepartments = () => {
     
-//     const departments = 'SELECT*FROM department';
-//     connection.departments(departments, function (err, res) {
-//         if (err) throw err;
-//         console.table('All Departments:', res);
+    const departments = `SELECT*FROM department`;
+    db.query(departments, function (err, res) {
+        if (err) throw err;
+        console.table('All Departments:', res);
         
-//         mainNav();
-//     })
-// };
+        mainNav();
+    })
+};
 
 // view all roles
-// viewRoles = () => {
+// role id, name, salary
+// department name through deptid
+viewRoles = () => {
     
-//     const roles = 'SELECT*FROM roles';
-//     connection.roles(roles, function (err, res) {
-//         if (err) throw err;
-//         console.table('All Roles:', res);
+    const roles = `SELECT*FROM roles
+    RIGHT JOIN department ON roles.department_id = department.id;`
+    db.query(roles, function (err, res) {
+        if (err) throw err;
+        console.table('All Roles:', res);
         
-//         mainNav();
-//     })
-// }
+        mainNav();
+    })
+}
 
 //* POST ROUTES-----------------------------------------------------------------------
 // add a dept.
@@ -232,7 +247,7 @@ const mainNav = () => {
 //     .then(response => {
 //         const addDept = `INSERT INTO department (name)
 //                 VALUES (?)`;
-//             connection.query(sql, function (err, res) {
+//             connection.query(addDept, function (err, res) {
 //             if (err) throw err;
 //             console.table('All Departments:', res); 
 //             // back to nav
