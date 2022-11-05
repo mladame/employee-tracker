@@ -8,7 +8,7 @@ VALUES  ("Sales & Marketing"),
         ("Administration");
 
 -- roles
-INSERT INTO role (title, salary, department_id)
+INSERT INTO roles (title, salary, department_id)
 VALUES  ("Salesman", 50000, 1),
         ("Marketing Coordinator", 60000, 1),
         ("Accountant", 80000, 2),
@@ -19,7 +19,7 @@ VALUES  ("Salesman", 50000, 1),
         ("Executive Assistant", 50000, 4);
 
 -- employees
-INSERT INTO employee (first_name, last_name, role_id, manager_id)
+INSERT INTO employee (first_name, last_name, roles_id, manager_id)
 VALUES  ('Paulina', 'Mendoza', 1, 1),
         ('Krishna', 'Shea', 1, null),
         ('Ben', 'Brook', 2, null),

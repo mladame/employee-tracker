@@ -101,7 +101,7 @@ const mainNav = () => {
         }
     ])
         .then(response => {
-//! fix 
+            //! fix 
             switch (response.nav) {
                 case "VIEW_EMPLOYEES":
                     viewEmployees()
@@ -141,13 +141,14 @@ exitTracker = () => {
     ])  //! fix 
         .then((answers) => {
             // if true quit, otherwise back to mainNav
-            switch(answers) {
-            case "false":
+            switch (answers) {
+                case "false":
                     mainNav()
                     break;
                 default:
                     prompt.ui.close();
-        }}) //! fix 
+            }
+        }) //! fix 
         .catch((err) => {
             if (err) {
                 // Prompt couldn't be rendered in the current environment
@@ -189,8 +190,18 @@ viewEmployees = () => {
     // department table: dept name
     //! fix 
     console.log('hello');
-    const employees = 'SELECT*FROM employee LEFT JOIN roles ON employee.role_id = roles.id;'
-    db.query(employees, function (err, res) {
+    const sql = `SELECT employee.id AS id, 
+        employee.first_name AS first_name, 
+        employee.last_name AS last_name, 
+        roles.title AS title, 
+        department.name AS department,
+        roles.salary AS salary, 
+        CONCAT (manager.first_name, " ", manager.last_name) AS manager
+    FROM employee
+        LEFT JOIN roles ON employee.roles_id = roles.id
+        LEFT JOIN department ON roles.department_id = department.id
+        LEFT JOIN employee manager ON employee.manager_id = manager.id`;
+    db.query(sql, function (err, res) {
         if (err) throw err;
         // display response as table 
         console.table('All Employees:', res);
@@ -201,27 +212,25 @@ viewEmployees = () => {
 
 // GET ALL DEPARTMENTS
 viewDepartments = () => {
-    
+
     const departments = `SELECT*FROM department`;
     db.query(departments, function (err, res) {
         if (err) throw err;
         console.table('All Departments:', res);
-        
+
         mainNav();
     })
 };
 
-// view all roles
-// role id, name, salary
-// department name through deptid
+// GET ALL ROLES
 viewRoles = () => {
-    
+
     const roles = `SELECT*FROM roles
     RIGHT JOIN department ON roles.department_id = department.id;`
     db.query(roles, function (err, res) {
         if (err) throw err;
         console.table('All Roles:', res);
-        
+
         mainNav();
     })
 }
@@ -229,7 +238,7 @@ viewRoles = () => {
 //* POST ROUTES-----------------------------------------------------------------------
 // add a dept.
 // newDept = () => {
-    
+
 //     inquirer.prompt([
 //         {
 //             type: 'input',
@@ -257,7 +266,7 @@ viewRoles = () => {
 
 // add a role
 // newRole = () => {
-    
+
 //     inquirer.prompt([
 //         {
 //             type: 'input',
@@ -393,5 +402,5 @@ app.use((req, res) => {
 });
 
 app.listen(PORT, () => {
-console.log(`Server running on port ${PORT}`);
+    console.log(`Server running on port ${PORT}`);
 });
